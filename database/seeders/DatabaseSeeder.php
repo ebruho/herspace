@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         
         $this->call([
             RolesSeeder::class,
+            CitiesSeeder::class,
         ]);
 
         $roleId = DB::table('roles')->where('name', 'user')->value('id');

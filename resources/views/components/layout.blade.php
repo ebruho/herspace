@@ -1,29 +1,42 @@
 @props([
-    'title' => 'HerSpace'
+    'title' => 'HerSpace',
+    'showFooter' => true,
 ])
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="cupcake">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <style>
+        :root {
+            --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+            --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+        }
+        body { font-family: var(--font-sans); }
+        .font-serif { font-family: var(--font-serif); }
+    </style>
+    @stack('styles')
 </head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/contact">Contact</a></li>
-        </ul>
-    </nav>
+<body class="min-h-screen antialiased text-base-content">
     <main>
         {{ $slot }}
     </main>
 
-    <footer>
-        <p>&copy; 2026 My Website</p>
-    </footer>
+    @if ($showFooter)
+        <footer class="footer footer-center border-base-300 border-t p-6 text-base-content/70 text-sm">
+            <p>&copy; {{ date('Y') }} HerSpace</p>
+        </footer>
+    @endif
+
+    @stack('scripts')
 </body>
 </html>
