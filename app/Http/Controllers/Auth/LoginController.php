@@ -11,7 +11,7 @@ class LoginController extends Controller
     public function store(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'string'],
+            'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
 
@@ -27,7 +27,7 @@ class LoginController extends Controller
             ->withErrors([
                 'email' => 'The provided credentials do not match our records.',
             ])
-            ->onlyInput('email');
+            ;
     }
 }
 

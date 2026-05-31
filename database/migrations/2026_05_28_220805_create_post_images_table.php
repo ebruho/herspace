@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cities', function (Blueprint $table) {
+        Schema::create('post_images', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('country_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
+            $table->foreignId('post_id')->constrained()->onDelete('cascade');
+            $table->string('image_url');
+            $table->string('caption')->nullable();
+            $table->unsignedInteger('order_index')->default(0);
 
-            $table->index('name');
-            $table->index('country_id');
+            $table->index('post_id');
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cities');
+        Schema::dropIfExists('post_images');
     }
 };

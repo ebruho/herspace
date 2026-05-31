@@ -6,7 +6,7 @@
             <x-auth.section-heading step="1" :heading="__('Sign in')" heading-id="sec-signin" />
 
             <div class="fieldset mb-4">
-                <label class="fieldset-label text-xs font-semibold uppercase tracking-wider text-[#6B6560]" for="email">{{ __('Email / username') }}</label>
+                <label class="fieldset-label text-xs font-semibold uppercase tracking-wider text-[#6B6560]" for="email">{{ __('Email') }}</label>
                 <div class="auth-input-shell @error('email') has-error has-server-err @enderror">
                     <input
                         id="email"
@@ -39,11 +39,11 @@
                     />
                 </div>
             </div>
-
+{{-- 
             <label class="label mb-6 cursor-pointer justify-start gap-3 py-0">
                 <input type="checkbox" name="remember" class="checkbox checkbox-sm border-[rgba(58,155,155,0.45)] [--chkfg:white] [--chkbg:#3A9B9B]" {{ old('remember') ? 'checked' : '' }} />
                 <span class="label-text text-sm text-[#6B6560]">{{ __('Remember me for 30 days') }}</span>
-            </label>
+            </label> --}}
 
             <button type="submit" class="btn w-full rounded-full border-0 bg-gradient-to-br from-[#E8B4BC] to-[#C895A3] py-6 text-base font-semibold text-white shadow-lg hover:opacity-95">
                 {{ __('Sign In') }}
@@ -51,9 +51,9 @@
         </fieldset>
     </form>
 
-    <div class="divider my-8 text-xs font-semibold uppercase tracking-wider text-[#6B6560]">{{ __('or continue with') }}</div>
+    {{-- <div class="divider my-8 text-xs font-semibold uppercase tracking-wider text-[#6B6560]">{{ __('or continue with') }}</div> --}}
 
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    {{-- <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <x-auth.oauth-button
             provider="google"
             :href="\Illuminate\Support\Facades\Route::has('auth.google') ? route('auth.google') : '#'"
@@ -64,7 +64,7 @@
             :href="\Illuminate\Support\Facades\Route::has('auth.apple') ? route('auth.apple') : '#'"
             :label="__('Apple')"
         />
-    </div>
+    </div> --}}
 
     <x-slot:footer>
         @if (Route::has('register'))

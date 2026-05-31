@@ -80,6 +80,38 @@
                 opacity: 0;
                 pointer-events: none;
             }
+            #city-select-wrap .ts-wrapper {
+                width: 100%;
+            }
+            #city-select-wrap .ts-control {
+                min-height: 3.25rem;
+                padding: 0.65rem 1rem;
+                border-radius: 1.5rem;
+                border: 1.5px solid transparent;
+                background: #ebe8e2;
+                box-shadow: 0 2px 8px rgba(58, 53, 50, 0.04);
+                font-family: "DM Sans", system-ui, sans-serif;
+                font-size: 0.9rem;
+            }
+            #city-select-wrap .ts-control.focus {
+                border-color: #3a9b9b;
+                background: #fdfcf9;
+                box-shadow: 0 0 0 3px rgba(58, 155, 155, 0.15);
+            }
+            #city-select-wrap.has-server-err .ts-control,
+            .auth-select-wrap.has-server-err .ts-control {
+                border-color: #c73e3e !important;
+                background: #fffbfb !important;
+            }
+            #city-select-wrap .ts-dropdown {
+                border-radius: 1rem;
+                border-color: rgba(58, 155, 155, 0.22);
+                overflow: hidden;
+            }
+            #city-select-wrap .ts-dropdown .option.active {
+                background: rgba(58, 155, 155, 0.12);
+                color: #2e7d7d;
+            }
         </style>
     @endpush
 @endonce

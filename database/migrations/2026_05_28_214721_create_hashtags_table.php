@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cities', function (Blueprint $table) {
+        Schema::create('hashtags', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('country_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
-
-            $table->index('name');
-            $table->index('country_id');
+            $table->string('name')->unique();
+            $table->unsignedInteger('posts_count')->default(0);
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cities');
+        Schema::dropIfExists('hashtags');
     }
 };

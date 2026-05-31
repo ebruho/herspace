@@ -1,4 +1,4 @@
-{{-- 
+
 @props([
     'name' => 'required'
 ])
@@ -7,4 +7,4 @@
     <div class="alert alert-error my-1">
         {{ $message }}
     </div>
-@enderror --}}
+@enderror

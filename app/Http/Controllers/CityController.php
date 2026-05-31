@@ -10,30 +10,31 @@ class CityController extends Controller
     public function search(Request $request)
     {
         $query = trim((string) $request->get('q', ''));
-        if ($query === '') {
-            return response()->json([]);
-        }
 
         $driver = City::query()->getConnection()->getDriverName();
 
         $cities = City::query()
             ->with('country')
             ->when(
-                $driver === 'pgsql',
-                fn ($q) => $q->where('name', 'ILIKE', '%'.$query.'%'),
-                fn ($q) => $q->whereRaw('LOWER(name) LIKE ?', ['%'.mb_strtolower($query).'%'])
+                $query !== '',
+                fn ($q) => $q->when(
+                    $driver === 'pgsql',
+                    fn ($inner) => $inner->where('name', 'ILIKE', '%'.$query.'%'),
+                    fn ($inner) => $inner->whereRaw('LOWER(name) LIKE ?', ['%'.mb_strtolower($query).'%'])
+                )
             )
-            ->limit(10)
+            ->orderBy('name')
+            ->limit($query === '' ? 15 : 10)
             ->get();
 
-        return $cities->map(function (City $city) {
+        return response()->json($cities->map(function (City $city) {
             $countryName = $city->country?->name ?? '';
 
             return [
                 'id' => $city->id,
                 'text' => trim($city->name.', '.$countryName, ', '),
             ];
-        });
+        }));
     }
     /**
      * Display a listing of the resource.

@@ -3,10 +3,11 @@
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CityController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\SessionsController;
+use App\Http\Controllers\Auth\LoginController;
 
-Route::get('/', function () {
-    return view('home');
-});
+
+
 
 Route::get('/welcome', function () {
     return view('welcome');
@@ -27,15 +28,25 @@ Route::middleware('guest')->group(function () {
         ->name('register.perform');
 });
 
-Route::get('/profile', function () {
-    return view('profile');
-})->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('/', function () {
+        return view('home');
+    })->name('home');
 
-// Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'destroy'])
-//     ->name('logout');
+    Route::get('/profile', function () {
+        return view('profile');
+    })->name('profile');
+
+    Route::delete('/logout', [\App\Http\Controllers\Auth\SessionsController::class, 'destroy'])
+    ->name('logout');
+});
+
+
+
+
 
 Route::get('/about', function () {
     return view('about');
 })->name('about');
 
-Route::get('/cities/search', [CityController::class, 'search']);
+Route::get('/cities/search', [CityController::class, 'search'])->name('cities.search');

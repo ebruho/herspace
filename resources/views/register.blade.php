@@ -61,9 +61,10 @@
                         </span>
                     </div>
                     <p id="username-hint" class="mt-1 hidden text-xs font-medium text-[#2E7D7D]">{{ __('That name is available!') }}</p>
-                    @error('username')
+                    {{-- @error('username')
                         <p class="mt-1 text-xs text-error">{{ $message }}</p>
-                    @enderror
+                    @enderror --}}
+                    <x-error name="username" />
                 </div>
                 <div class="fieldset mb-0">
                     <label class="fieldset-label text-xs font-semibold uppercase tracking-wider text-[#6B6560]" for="email">{{ __('Email') }}</label>
@@ -88,9 +89,10 @@
                             </svg>
                         </span>
                     </div>
-                    @error('email')
+                    {{-- @error('email')
                         <p class="mt-1 text-xs text-error">{{ $message }}</p>
-                    @enderror
+                    @enderror --}}
+                    <x-error name="email" />
                 </div>
             </div>
         </fieldset>
@@ -121,9 +123,10 @@
                         </span>
                     </div>
                     <p id="password-hint" class="mt-1 hidden text-xs text-error">{{ __('Password is too weak. Try adding symbols.') }}</p>
-                    @error('password')
+                    {{-- @error('password')
                         <p class="mt-1 text-xs text-error">{{ $message }}</p>
-                    @enderror
+                    @enderror --}}
+                    <x-error name="password" />
                 </div>
                 <div class="fieldset mb-0">
                     <label class="fieldset-label text-xs font-semibold uppercase tracking-wider text-[#6B6560]" for="password_confirmation">{{ __('Confirm password') }}</label>
@@ -144,6 +147,40 @@
         <fieldset class="fieldset mb-5 border-0 p-0">
             <x-auth.section-heading step="3" :heading="__('Personal details')" heading-id="sec-personal" />
             <div class="auth-grid-2">
+                    <div class="fieldset mb-0">
+                        <label class="fieldset-label text-xs font-semibold uppercase tracking-wider text-[#6B6560]" for="first_name">
+                            {{ __('First name') }}
+                        </label>
+                        <div class="auth-input-shell">
+                            <input
+                                id="first_name"
+                                name="first_name"
+                                type="text"
+                                value="{{ old('first_name') }}"
+                                placeholder="Maria"
+                                autocomplete="given-name"
+                                class="input input-bordered w-full rounded-3xl border-transparent bg-[#EBE8E2] py-3.5 pr-4 text-[#3A3532] placeholder:text-[#9A948C] focus:border-[#3A9B9B] focus:outline-none"
+                            />
+                        </div>
+                        <x-error name="first_name" />
+                    </div>
+                    <div class="fieldset mb-0">
+                        <label class="fieldset-label text-xs font-semibold uppercase tracking-wider text-[#6B6560]" for="last_name">
+                            {{ __('Last name') }}
+                        </label>
+                        <div class="auth-input-shell">
+                            <input
+                                id="last_name"
+                                name="last_name"
+                                type="text"
+                                value="{{ old('last_name') }}"
+                                placeholder="Ivanova"
+                                autocomplete="family-name"
+                                class="input input-bordered w-full rounded-3xl border-transparent bg-[#EBE8E2] py-3.5 pr-4 text-[#3A3532] placeholder:text-[#9A948C] focus:border-[#3A9B9B] focus:outline-none"
+                            />
+                        </div>
+                        <x-error name="last_name" />
+                    </div>
                 <div class="fieldset mb-0">
                     <label class="fieldset-label text-xs font-semibold uppercase tracking-wider text-[#6B6560]" for="phone">{{ __('Phone number') }}</label>
                     <div class="auth-input-shell">
@@ -174,32 +211,30 @@
 
             <div class="fieldset mt-4 mb-0">
                 <label class="fieldset-label text-xs font-semibold uppercase tracking-wider text-[#6B6560]" for="city_id">{{ __('City') }}</label>
-                <div class="auth-input-shell auth-select-wrap @error('city_id') has-server-err @enderror">
+                <div class="auth-input-shell auth-select-wrap @error('city_id') has-server-err @enderror" id="city-select-wrap">
                     <select
                         id="city_id"
                         name="city_id"
                         required
-                        class="select select-bordered w-full rounded-3xl border-transparent bg-[#EBE8E2] py-3.5 text-[#3A3532] focus:border-[#3A9B9B] focus:outline-none"
+                        {{-- class="select select-bordered w-full rounded-3xl border-transparent bg-[#EBE8E2] py-3.5 text-[#3A3532] focus:border-[#3A9B9B] focus:outline-none" --}}
                     >
-                        {{-- <option value="" disabled @selected(old('city_id') === null)>{{ __('Select your city') }}</option>
-                        @forelse ($cities as $city)
-                            <option value="{{ $city->id }}" @selected((string) old('city_id') === (string) $city->id)>
-                                {{ $city->name }}
+                        <option value="">Select your city</option>
+                        @if ($selectedCity ?? null)
+                            <option value="{{ $selectedCity->id }}" selected>
+                                {{ $selectedCity->name }}@if ($selectedCity->country), {{ $selectedCity->country->name }}@endif
                             </option>
-                        @empty
-                            <option value="" disabled>{{ __('No cities — run: php artisan db:seed') }}</option>
-                        @endforelse --}}
+                        @endif
                     </select>
-                    <span class="auth-chevron" aria-hidden="true">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 9l6 6 6-6" />
-                        </svg>
-                    </span>
                 </div>
-                @error('city_id')
+                {{-- @error('city_id')
                     <p class="mt-1 text-xs text-error">{{ $message }}</p>
-                @enderror
+                @enderror --}}
+                <x-error name="city_id" />
             </div>
+
+         
+
+
 
             <div class="fieldset mt-4 mb-0">
                 <label class="fieldset-label text-xs font-semibold uppercase tracking-wider text-[#6B6560]" for="bio">{{ __('Tell us about yourself') }}</label>
@@ -228,90 +263,71 @@
     </x-slot:footer>
 </x-layouts.auth>
 
-@push('scripts')
-    <script>
-        (function () {
-            var avatar = document.getElementById('avatar');
-            var avatarTrigger = document.getElementById('avatar-trigger');
-            if (avatar && avatarTrigger) {
-                avatarTrigger.addEventListener('click', function () {
-                    avatar.click();
-                });
-            }
+<script>
+(function () {
+    // ── Avatar preview ──
+var avatar = document.getElementById('avatar');
+var avatarTrigger = document.getElementById('avatar-trigger');
+var avatarLabel = document.querySelector('label[for="avatar"]');
 
-            var userShell = document.getElementById('username-shell');
-            var userInput = document.getElementById('username');
-            var userHint = document.getElementById('username-hint');
-            var emailShell = document.getElementById('email-shell');
-            var emailInput = document.getElementById('email');
-            var passShell = document.getElementById('password-shell');
-            var passInput = document.getElementById('password');
-            var passHint = document.getElementById('password-hint');
+if (avatar && avatarTrigger) {
+    avatarTrigger.addEventListener('click', function () { avatar.click(); });
+    
+    avatar.addEventListener('change', function () {
+        var file = this.files[0];
+        if (!file) return;
+        
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            // Заменяме SVG иконката със снимката
+            avatarLabel.innerHTML = '<img src="' + e.target.result + '" alt="Profile photo" style="width:100%;height:100%;object-fit:cover;border-radius:9999px;">';
+        };
+        reader.readAsDataURL(file);
+    });
+}
 
-            function syncUser() {
-                if (!userShell || !userInput) return;
-                if (userShell.getAttribute('data-server-err')) return;
-                var v = userInput.value.trim();
-                var ok = /^[a-z0-9_]{3,32}$/.test(v);
-                userShell.classList.toggle('show-ok', ok);
-                if (userHint) {
-                    userHint.hidden = !ok;
-                    userHint.classList.toggle('hidden', !ok);
-                }
-            }
+    var userShell = document.getElementById('username-shell');
+    var userInput = document.getElementById('username');
+    var userHint  = document.getElementById('username-hint');
+    var emailShell = document.getElementById('email-shell');
+    var emailInput = document.getElementById('email');
+    var passShell  = document.getElementById('password-shell');
+    var passInput  = document.getElementById('password');
+    var passHint   = document.getElementById('password-hint');
 
-            function syncEmail() {
-                if (!emailShell || !emailInput) return;
-                if (emailShell.getAttribute('data-server-err')) {
-                    emailShell.classList.remove('show-ok');
-                    return;
-                }
-                if (typeof emailInput.checkValidity === 'function' && emailInput.value) {
-                    emailShell.classList.toggle('show-ok', emailInput.checkValidity());
-                } else {
-                    emailShell.classList.remove('show-ok');
-                }
-            }
+    function syncUser() {
+        if (!userShell || !userInput) return;
+        if (userShell.getAttribute('data-server-err')) return;
+        var ok = /^[a-z0-9_]{3,32}$/.test(userInput.value.trim());
+        userShell.classList.toggle('show-ok', ok);
+        if (userHint) userHint.classList.toggle('hidden', !ok);
+    }
+    function syncEmail() {
+        if (!emailShell || !emailInput) return;
+        if (emailShell.getAttribute('data-server-err')) { emailShell.classList.remove('show-ok'); return; }
+        emailShell.classList.toggle('show-ok', !!emailInput.value && emailInput.checkValidity());
+    }
+    function passwordWeak(p) {
+        return !p || p.length < 8 || !/[0-9]/.test(p) || !/[^a-zA-Z0-9]/.test(p);
+    }
+    function syncPass() {
+        if (!passShell || !passInput) return;
+        if (passShell.getAttribute('data-server-err')) {
+            passShell.classList.remove('has-error', 'show-warn');
+            if (passHint) passHint.classList.add('hidden');
+            return;
+        }
+        var weak = passInput.value.length > 0 && passwordWeak(passInput.value);
+        passShell.classList.toggle('has-error', weak);
+        passShell.classList.toggle('show-warn', weak);
+        if (passHint) passHint.classList.toggle('hidden', !weak);
+    }
+    if (userInput) { userInput.addEventListener('input', syncUser); syncUser(); }
+    if (emailInput) { emailInput.addEventListener('input', syncEmail); syncEmail(); }
+    if (passInput) { passInput.addEventListener('input', syncPass); syncPass(); }
+})();
+</script>
 
-            function passwordWeak(p) {
-                if (!p || p.length < 8) return true;
-                if (!/[0-9]/.test(p)) return true;
-                if (!/[^a-zA-Z0-9]/.test(p)) return true;
-                return false;
-            }
 
-            function syncPass() {
-                if (!passShell || !passInput) return;
-                if (passShell.getAttribute('data-server-err')) {
-                    passShell.classList.remove('has-error', 'show-warn');
-                    if (passHint) {
-                        passHint.hidden = true;
-                        passHint.classList.add('hidden');
-                    }
-                    return;
-                }
-                var p = passInput.value;
-                var weak = p.length > 0 && passwordWeak(p);
-                passShell.classList.toggle('has-error', weak);
-                passShell.classList.toggle('show-warn', weak);
-                if (passHint) {
-                    passHint.hidden = !weak;
-                    passHint.classList.toggle('hidden', !weak);
-                }
-            }
 
-            if (userInput) {
-                userInput.addEventListener('input', syncUser);
-                syncUser();
-            }
-            if (emailInput) {
-                emailInput.addEventListener('input', syncEmail);
-                syncEmail();
-            }
-            if (passInput) {
-                passInput.addEventListener('input', syncPass);
-                syncPass();
-            }
-        })();
-    </script>
-@endpush
+
