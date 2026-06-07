@@ -1,16 +1,41 @@
 <x-layouts.app title="Home - HerSpace">
     <div class="space-y-6">
-        <x-feed.composer />
+        {{-- <x-feed.composer /> --}}
 
         <x-feed.tabs active="for-you" />
 
-        <div class="space-y-6 pt-2">
+             <div class="space-y-6 pt-2">
+            @forelse ($posts as $post)
+
+                <x-feed.post-card
+                    :post="$post"
+                    :author-name="$post->user->username"
+                    :author-initials="strtoupper(substr($post->user->username, 0, 2))"
+                    :author-avatar="$post->user->profile_picture ? asset('storage/'.$post->user->profile_picture) : null"
+                    :author-url="route('profile', $post->user->username)"
+                    :meta="$post->created_at->diffForHumans()"
+                    :body="$post->content"
+                    :images="$post->images"   
+                    :likes="$post->likes_count"
+                    :comments="$post->comments_count"
+                />
+            @empty
+                <div class="rounded-2xl border border-[#ebe4dc] bg-white p-8 text-center text-[#8b7355]">
+                    <p class="font-serif text-lg">No posts yet.</p>
+                    <p class="mt-1 text-sm">Be the first to share something!</p>
+                </div>
+            @endforelse
+        </div>
+
+         {{ $posts->links() }}
+
+        {{-- <div class="space-y-6 pt-2">
             <x-feed.post-card
                 author-name="Elena Rose"
                 author-initials="ER"
                 meta="in Self-Care Sunday · 2 hours ago"
                 body="Caught the most beautiful sunset tonight. Sometimes the simplest moments are the ones that heal us the most. Taking a deep breath and letting the day go."
-                image="https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?auto=format&w=900&q=80"
+                images="https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?auto=format&w=900&q=80"
                 image-alt="Sunset over the ocean"
                 likes="1.2k"
                 comments="84"
@@ -86,7 +111,7 @@
                 image-alt="Calm morning tea setup"
                 likes="876"
                 comments="92"
-            />
+            /> --}}
         </div>
     </div>
 

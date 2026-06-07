@@ -37,6 +37,7 @@
                 </summary>
                 <ul class="menu dropdown-content z-[60] mt-2 w-44 rounded-2xl border border-[#ebe4dc] bg-white p-2 shadow-lg">
                     <li><a href="{{ route('profile') }}" class="rounded-xl">My Profile</a></li>
+                    <li><a href="{{ route('profile', ['username' => auth()->user()->username]) }}" class="rounded-xl">View as Public</a></li>
                     <li><a href="#" class="rounded-xl">Settings</a></li>
                     <li>
                         <form action="{{ route('logout') }}" method="POST">
