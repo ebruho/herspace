@@ -83,6 +83,16 @@ class User extends Authenticatable
         )->wherePivot('status', 'accepted');
     }
 
+    public function followers(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'follows',
+            'followed_user_id',  // текущия user
+            'following_user_id'  // който следва
+        )->wherePivot('status', 'accepted');
+    }
+
     public function likedPosts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class, 'post_likes');
