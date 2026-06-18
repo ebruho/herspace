@@ -2,6 +2,7 @@
     'user',
     'isOwner' => false,
     'isExpert' => false,
+    'isFollowing' => false,
 ])
 
 @php
@@ -33,7 +34,7 @@
             @endif
 
             <div class="pb-2">
-                <div class="flex flex-wrap items-center gap-2 ">
+                <div class="flex flex-wrap items-center gap-2">
                     <h1 class="font-serif text-2xl font-semibold text-[#3d2b22]">{{ $displayName }}</h1>
                     @if ($isExpert)
                         <span class="rounded-full bg-[#d4e8e8] px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-[#2e7d7d]">
@@ -56,18 +57,30 @@
     <div class="px-6 pb-5 pt-14">
         <div class="flex flex-wrap items-center justify-end gap-2">
             @if ($isOwner)
-                <a href="#" class="btn rounded-full border-[#ebe4dc] bg-white px-5 text-sm font-semibold text-[#3d2b22] hover:bg-[#f5efe8]">
+                <a href="{{ route('profile.edit') }}" class="btn rounded-full border-[#ebe4dc] bg-white px-5 text-sm font-semibold text-[#3d2b22] hover:bg-[#f5efe8]">
                     Edit Profile
                 </a>
             @else
                 <a href="#" class="btn rounded-full border-[#ebe4dc] bg-white px-5 text-sm font-semibold text-[#3d2b22] hover:bg-[#f5efe8]">
                     Message
                 </a>
-                <button type="button" class="btn rounded-full border-0 bg-[#5c4033] px-6 text-sm font-semibold text-white hover:bg-[#3d2b22]">
-                    Follow
-                </button>
+                @if ($isFollowing)
+                    <form method="POST" action="{{ route('profile.unfollow', $user->username) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn rounded-full border-[#ebe4dc] bg-white px-6 text-sm font-semibold text-[#3d2b22] hover:bg-[#f5efe8]">
+                            Following
+                        </button>
+                    </form>
+                @else
+                    <form method="POST" action="{{ route('profile.follow', $user->username) }}">
+                        @csrf
+                        <button type="submit" class="btn rounded-full border-0 bg-[#5c4033] px-6 text-sm font-semibold text-white hover:bg-[#3d2b22]">
+                            Follow
+                        </button>
+                    </form>
+                @endif
             @endif
         </div>
     </div>
 </section>
-

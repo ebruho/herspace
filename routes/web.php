@@ -9,6 +9,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FollowController;
 
 
 
@@ -33,6 +34,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 
     // PROFILE
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/{user:username}/follow', [FollowController::class, 'store'])->name('profile.follow');
+    Route::delete('/profile/{user:username}/follow', [FollowController::class, 'destroy'])->name('profile.unfollow');
     Route::get('/profile/{username?}', [ProfileController::class, 'show'])->name('profile');
 
     // LOGOUT

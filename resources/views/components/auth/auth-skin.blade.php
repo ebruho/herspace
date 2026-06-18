@@ -83,6 +83,19 @@
             #city-select-wrap .ts-wrapper {
                 width: 100%;
             }
+            #city-select-wrap .ts-wrapper.loading {
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 0 !important;
+                aspect-ratio: auto !important;
+                background: transparent !important;
+                color: inherit !important;
+                pointer-events: auto !important;
+                mask: none !important;
+                -webkit-mask: none !important;
+                animation: none !important;
+            }
             #city-select-wrap .ts-control {
                 min-height: 3.25rem;
                 padding: 0.65rem 1rem;
@@ -111,6 +124,21 @@
             #city-select-wrap .ts-dropdown .option.active {
                 background: rgba(58, 155, 155, 0.12);
                 color: #2e7d7d;
+            }
+            #city-select-wrap .ts-dropdown .spinner {
+                display: flex;
+                width: 1rem;
+                height: 1rem;
+                margin: 0.65rem auto;
+                align-items: center;
+                justify-content: center;
+            }
+            #city-select-wrap .ts-dropdown .spinner::after {
+                width: 0.85rem;
+                height: 0.85rem;
+                margin: 0;
+                border-width: 2px;
+                border-color: #8b7355 transparent #8b7355 transparent;
             }
         </style>
     @endpush

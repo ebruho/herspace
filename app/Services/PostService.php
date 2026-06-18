@@ -85,15 +85,27 @@ class PostService
     {
         preg_match_all('/#([a-zA-Z0-9_]+)/', $content, $matches);
 
-        if (empty($matches[1])) return;
+        $oldHashtagIds = $post->hashtags()->pluck('hashtags.id')->all();
+        $tagNames = collect($matches[1] ?? [])
+            ->map(fn (string $tag) => strtolower($tag))
+            ->unique()
+            ->values();
 
         $hashtagIds = [];
-        foreach ($matches[1] as $tag) {
+        foreach ($tagNames as $tag) {
             $hashtag = Hashtag::firstOrCreate(['name' => strtolower($tag)]);
-            $hashtag->increment('posts_count');
             $hashtagIds[] = $hashtag->id;
         }
 
         $post->hashtags()->sync($hashtagIds);
+
+        $newHashtagIds = $post->hashtags()->pluck('hashtags.id')->all();
+
+        Hashtag::whereIn('id', array_diff($newHashtagIds, $oldHashtagIds))
+            ->increment('posts_count');
+
+        Hashtag::whereIn('id', array_diff($oldHashtagIds, $newHashtagIds))
+            ->where('posts_count', '>', 0)
+            ->decrement('posts_count');
     }
 }

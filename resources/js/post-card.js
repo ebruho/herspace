@@ -1,10 +1,11 @@
-export function postCard({ postId, liked, likesCount, commentsCount }) {
+export function postCard({ postId, liked, likesCount, commentsCount, initialShowComments = false, allComments = false }) {
     return {
         postId,
         liked,
         likesCount,
         commentsCount,
-        showComments: false,
+        showComments: initialShowComments,
+        allComments,
         comments: [],
         loaded: false,
         loadingComments: false,
@@ -31,7 +32,8 @@ export function postCard({ postId, liked, likesCount, commentsCount }) {
             this.loadingComments = true;
 
             try {
-                const res = await fetch(`/posts/${this.postId}/comments`, {
+                const url = `/posts/${this.postId}/comments${this.allComments ? '?all=1' : ''}`;
+                const res = await fetch(url, {
                     headers: { 'Accept': 'application/json' },
                 });
 

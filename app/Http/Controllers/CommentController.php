@@ -7,17 +7,26 @@ use App\Models\Post;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class CommentController extends Controller
 {
-    public function index(Post $post): JsonResponse
+    public function index(Request $request, Post $post): JsonResponse
     {
+        $this->ensurePostIsVisible($request, $post);
+
+        $limit = $request->boolean('all') ? null : 20;
+
         $comments = $post->comments()
             ->with(['user', 'replies.user'])
             ->whereNull('parent_id')
-            ->latest()
-            ->take(20)
-            ->get()
+            ->latest();
+
+        if ($limit !== null) {
+            $comments->take($limit);
+        }
+
+        $comments = $comments->get()
             ->map(fn (Comment $comment) => $this->formatComment($comment, withReplies: true));
 
         return response()->json($comments);
@@ -25,9 +34,20 @@ class CommentController extends Controller
 
     public function store(Request $request, Post $post): JsonResponse
     {
+        $this->ensurePostIsVisible($request, $post);
+
         $validated = $request->validate([
             'content' => ['required', 'string', 'max:1000'],
-            'parent_id' => ['nullable', 'integer', 'exists:comments,id'],
+            'parent_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('comments', 'id')->where(function ($query) use ($post) {
+                    $query
+                        ->where('post_id', $post->id)
+                        ->whereNull('parent_id')
+                        ->whereNull('deleted_at');
+                }),
+            ],
         ]);
 
         $comment = $post->comments()->create([
@@ -100,5 +120,17 @@ class CommentController extends Controller
         }
 
         return $payload;
+    }
+
+    private function ensurePostIsVisible(Request $request, Post $post): void
+    {
+        abort_unless(
+            Post::query()
+                ->whereKey($post->id)
+                ->where('status', 'active')
+                ->visibleTo($request->user())
+                ->exists(),
+            404
+        );
     }
 }

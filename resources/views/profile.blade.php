@@ -3,16 +3,20 @@
 
     @php
         $variant = $isExpert ? 'expert' : ($isOwner ? 'self' : 'user');
-        $postsCount = ($profileUser->relationLoaded('posts') ? $profileUser->posts->count() : null) ?? ($posts?->count() ?? 0);
     @endphp
 
     <div class="space-y-6">
-        <x-profile.header :user="$profileUser" :is-owner="$isOwner" :is-expert="$isExpert" />
+        <x-profile.header
+            :user="$profileUser"
+            :is-owner="$isOwner"
+            :is-expert="$isExpert"
+            :is-following="$isFollowing"
+        />
 
         <x-profile.stats
-            :posts="$postsCount"
-            followers="{{ $isExpert ? '14.2k' : 231 }}"
-            following="{{ $isExpert ? 432 : 87 }}"
+            :posts="$stats['posts']"
+            :followers="$stats['followers']"
+            :following="$stats['following']"
             :label-posts="$isExpert ? 'Articles' : 'Posts'"
         />
 
@@ -57,7 +61,7 @@
                                 :author-name="$post->user->username"
                                 :author-initials="strtoupper(substr($post->user->username, 0, 2))"
                                 :author-avatar="$post->user->profile_picture ? asset('storage/'.$post->user->profile_picture) : null"
-                                :author-url="route('profile')"
+                                :author-url="route('profile', $post->user->username)"
                                 :meta="$post->created_at->diffForHumans()"
                                 :body="$post->content"
                                 :images="$post->images"   
@@ -100,7 +104,11 @@
                         </ul>
                     </x-feed.sidebar-card>
                 @else
-                    <x-profile.about-card title="About me" :text="($profileUser->bio ?: null)" />
+                    <x-profile.about-card
+                        title="Profile details"
+                        :user="$profileUser"
+                        :is-owner="$isOwner"
+                    />
 
                     <x-feed.sidebar-card title="Recent moods">
                         @foreach ([['label' => 'Happy', 'pct' => 34], ['label' => 'Motivated', 'pct' => 29], ['label' => 'Calm', 'pct' => 22], ['label' => 'Reflective', 'pct' => 15]] as $m)

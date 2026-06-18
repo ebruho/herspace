@@ -1,5 +1,5 @@
 @props([
-    'post',
+    'post' => null,
     'authorName',
     'authorAvatar' => null,
     'authorUrl'    => null,
@@ -10,16 +10,34 @@
     'images'    => null,
     'imageAlt'  => '',
     'showShare' => true,
+    'showImages' => true,
+    'initialShowComments' => false,
+    'allComments' => false,
+    'likes'     => 0,
+    'comments'  => 0,
 ])
 
+@php
+    $isInteractive = $post instanceof \App\Models\Post;
+    $likesCount = $isInteractive ? $post->likes_count : (int) $likes;
+    $commentsCount = $isInteractive ? $post->comments_count : (int) $comments;
+    $liked = $isInteractive && auth()->user()?->likedPosts?->contains($post->id);
+@endphp
+
 <article
-    x-data="postCard({
-        postId: {{ $post->id }},
-        liked: {{ auth()->user()->likedPosts->contains($post->id) ? 'true' : 'false' }},
-        likesCount: {{ $post->likes_count }},
-        commentsCount: {{ $post->comments_count }}
-    })"
-    x-init="$watch('showComments', v => { if (v && !loaded) loadComments() })"
+    @if ($isInteractive)
+        x-data="postCard({
+            postId: {{ $post->id }},
+            liked: {{ $liked ? 'true' : 'false' }},
+            likesCount: {{ $likesCount }},
+            commentsCount: {{ $commentsCount }},
+            initialShowComments: {{ $initialShowComments ? 'true' : 'false' }},
+            allComments: {{ $allComments ? 'true' : 'false' }}
+        })"
+        x-init="if (showComments && !loaded) loadComments(); $watch('showComments', v => { if (v && !loaded) loadComments() })"
+    @else
+        x-data="{ liked: false, likesCount: {{ $likesCount }}, commentsCount: {{ $commentsCount }} }"
+    @endif
     {{ $attributes->merge(['class' => 'overflow-hidden rounded-2xl border border-[#ebe4dc] bg-white shadow-sm']) }}
 >
     {{-- Header --}}
@@ -46,40 +64,46 @@
                 <p class="text-xs text-[#8b7355]">{{ $meta }}</p>
             </div>
 
-            {{-- Dropdown menu --}}
-            <div class="relative" x-data="{ open: false }">
-                <button type="button" @click="open = !open"
-                    class="rounded-lg p-1 text-[#8b7355] hover:bg-[#f5efe8]">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                        <circle cx="5" cy="12" r="2"/>
-                        <circle cx="12" cy="12" r="2"/>
-                        <circle cx="19" cy="12" r="2"/>
-                    </svg>
-                </button>
+            @if ($isInteractive)
+                {{-- Dropdown menu --}}
+                <div class="relative" x-data="{ open: false }">
+                    <button type="button" @click="open = !open"
+                        class="rounded-lg p-1 text-[#8b7355] hover:bg-[#f5efe8]">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="5" cy="12" r="2"/>
+                            <circle cx="12" cy="12" r="2"/>
+                            <circle cx="19" cy="12" r="2"/>
+                        </svg>
+                    </button>
 
-                <div x-show="open" x-cloak x-transition @click.outside="open = false"
-                    class="absolute right-0 mt-2 w-40 rounded-xl border border-[#ebe4dc] bg-white shadow-lg z-50">
+                    <div x-show="open" x-cloak x-transition @click.outside="open = false"
+                        class="absolute right-0 mt-2 w-40 rounded-xl border border-[#ebe4dc] bg-white shadow-lg z-50">
 
-                    @can('update', $post)
-                        <a href="{{ route('posts.edit', $post) }}"
+                        @can('update', $post)
+                            <a href="{{ route('posts.edit', $post) }}"
+                               class="block px-4 py-2 text-sm hover:bg-[#f5efe8]">
+                                Edit post
+                            </a>
+                            <button type="button"
+                                @click="open = false; deletePost({{ $post->id }})"
+                                class="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-[#f5efe8]">
+                                Delete post
+                            </button>
+                        @endcan
+
+                        @cannot('update', $post)
+                            <button type="button"
+                                class="block w-full px-4 py-2 text-left text-sm hover:bg-[#f5efe8]">
+                                Report post
+                            </button>
+                        @endcannot
+                        <a href="{{ route('posts.show', $post) }}"
                            class="block px-4 py-2 text-sm hover:bg-[#f5efe8]">
-                            Edit post
+                            View post
                         </a>
-                        <button type="button"
-                            @click="open = false; deletePost({{ $post->id }})"
-                            class="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-[#f5efe8]">
-                            Delete post
-                        </button>
-                    @endcan
-
-                    @cannot('update', $post)
-                        <button type="button"
-                            class="block w-full px-4 py-2 text-left text-sm hover:bg-[#f5efe8]">
-                            Report post
-                        </button>
-                    @endcannot
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         @if ($quote)
@@ -92,12 +116,12 @@
     </div>
 
     {{-- Images --}}
-    @if ($images && $images->count() === 1)
+    @if ($showImages && $images && $images->count() === 1)
         <img src="{{ asset('storage/'.$images->first()->image_url) }}"
              alt="{{ $images->first()->caption ?? '' }}"
              class="aspect-[16/10] w-full object-cover" loading="lazy"/>
 
-    @elseif ($images && $images->count() > 1)
+    @elseif ($showImages && $images && $images->count() > 1)
         <div class="grid grid-cols-2 gap-0.5">
             @foreach ($images->take(4) as $img)
                 <div class="relative {{ $loop->first && $images->count() % 2 !== 0 ? 'col-span-2' : '' }}">
@@ -116,7 +140,7 @@
 
     {{-- Action bar --}}
     <div class="flex flex-wrap items-center gap-4 border-t border-[#f0ebe4] px-5 py-3 text-sm text-[#6b5b52]">
-        <button type="button" @click="toggleLike"
+        <button type="button" @if ($isInteractive) @click="toggleLike" @else disabled @endif
             class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 hover:bg-[#f5efe8] transition"
             :class="liked ? 'text-[#e8b4bc]' : 'text-[#6b5b52]'">
             <svg class="h-4 w-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
@@ -126,7 +150,7 @@
             <span x-text="likesCount"></span>
         </button>
 
-        <button type="button" @click="showComments = !showComments"
+        <button type="button" @if ($isInteractive) @click="showComments = !showComments" @else disabled @endif
             class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 hover:bg-[#f5efe8] hover:text-[#3d2b22] transition">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
@@ -134,7 +158,7 @@
             <span x-text="commentsCount"></span>
         </button>
 
-        @if ($showShare)
+        @if ($showShare && $isInteractive)
             <a href="{{ route('posts.show', $post) }}"
                class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 hover:bg-[#f5efe8] hover:text-[#3d2b22] ml-auto">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -146,6 +170,7 @@
     </div>
 
     {{-- Comments section --}}
+    @if ($isInteractive)
     <div x-show="showComments" x-cloak class="border-t border-[#f0ebe4] px-5 py-4 space-y-4">
 
         {{-- Comment list --}}
@@ -285,4 +310,5 @@
             </div>
         </div>
     </div>
+    @endif
 </article>

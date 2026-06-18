@@ -116,15 +116,10 @@
 </script> --}}
 
 {{-- <script>
-    console.log('script loaded');
     document.addEventListener('DOMContentLoaded', function () {
-    console.log('DOM ready');
     var cityEl = document.getElementById('city_id');
-    console.log('cityEl:', cityEl);
-    console.log('TomSelect:', typeof TomSelect);
 
     if (!cityEl || typeof TomSelect === 'undefined') {
-        console.log('RETURNING EARLY');
         return;
     }
 
