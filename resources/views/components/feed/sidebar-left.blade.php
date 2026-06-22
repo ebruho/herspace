@@ -3,7 +3,7 @@
         ['label' => 'Home', 'href' => route('home'), 'active' => request()->routeIs('home'), 'icon' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>'],
         ['label' => 'My Profile', 'href' => route('profile'), 'active' => request()->routeIs('profile') && !request()->route('username'), 'icon' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5"> <circle cx="12" cy="7" r="4"/> <path d="M5.5 21a6.5 6.5 0 0 1 13 0"/> </svg>'],
         ['label' => 'Communities', 'href' => '#', 'active' => false, 'icon' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><path d="M2 20a7 7 0 0 1 14 0M10 20a7 7 0 0 1 14 0"/></svg>'],
-        ['label' => 'Messages', 'href' => '#', 'active' => false, 'icon' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>'],
+        ['label' => 'Messages', 'href' => route('messages.index'), 'active' => request()->routeIs('messages.*'), 'icon' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>'],
         ['label' => 'Notifications', 'href' => '#', 'active' => false, 'icon' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>'],
         ['label' => 'Saved', 'href' => '#', 'active' => false, 'icon' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'],
         ['label' => 'Mental Health', 'href' => '#', 'active' => false, 'icon' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10z"/></svg>'],
@@ -33,6 +33,7 @@
             <button
                 id="open-post-modal"
                 type="button"
+                @disabled(request()->routeIs('posts.edit'))
                 class="btn flex w-full items-center justify-center gap-2 rounded-full border-0 bg-[#5c4033] py-3 text-sm font-semibold text-white hover:bg-[#3d2b22]"
             >
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

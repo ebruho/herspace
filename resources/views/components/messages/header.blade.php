@@ -4,47 +4,32 @@
             HerSpace
         </a>
 
-        <form action="{{ route('search') }}" method="GET" class="mx-auto hidden max-w-xl flex-1 md:block">
+        <div class="mx-auto hidden max-w-md flex-1 md:block lg:max-w-lg">
             <label class="relative block">
                 <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-[#8b7355]">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
                 </span>
                 <input
                     type="search"
-                    name="q"
-                    value="{{ request('q') }}"
-                    placeholder="Search posts, #hashtags, users..."
-                    class="input input-bordered w-full rounded-full border-[#ebe4dc] bg-[#f5efe8] py-3 pl-11 pr-4 text-sm text-[#3d2b22] placeholder:text-[#a89888] focus:border-[#e8b4bc] focus:outline-none"
+                    placeholder="Search conversations"
+                    class="input input-bordered w-full rounded-full border-[#ebe4dc] bg-[#f5efe8] py-2.5 pl-11 pr-4 text-sm text-[#3d2b22] placeholder:text-[#a89888] focus:border-[#e8b4bc] focus:outline-none"
                 />
             </label>
-              
-        </form>
-            {{-- <form action="{{ route('search') }}" method="GET" class="flex flex-col gap-3 sm:flex-row">
-                <label class="relative flex-1">
-                    <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-[#8b7355]">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
-                    </span>
-                    <input
-                        type="search"
-                        name="q"
-                        value="{{ request('q') }}"
-                        placeholder="Search posts, #hashtags, users..."
-                        class="input input-bordered w-full rounded-full border-[#ebe4dc] bg-[#f5efe8] py-3 pl-11 pr-4 text-sm text-[#3d2b22] placeholder:text-[#a89888] focus:border-[#e8b4bc] focus:outline-none"
-                        autofocus
-                    >
-                </label>
-                <button class="btn rounded-full border-0 bg-[#5c4033] px-6 text-sm font-semibold text-white hover:bg-[#3d2b22]">
-                    Search
-                </button>
-            </form> --}}
+        </div>
+
+        <nav class="hidden items-center gap-6 text-sm font-medium md:flex" aria-label="Primary">
+            <a href="{{ route('home') }}" class="text-[#8b7355] no-underline hover:text-[#3d2b22]">Explore</a>
+            <a href="{{ route('messages.index') }}" class="font-semibold text-[#3d2b22] no-underline">Messages</a>
+            <a href="#" class="text-[#8b7355] no-underline hover:text-[#3d2b22]">Communities</a>
+        </nav>
 
         <div class="ml-auto flex items-center gap-2 sm:gap-3">
-            <a href="{{ route('messages.index') }}" class="btn btn-ghost btn-circle btn-sm text-[#6b5b52]" aria-label="Messages">
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>
-            </a>
             <a href="#" class="btn btn-ghost btn-circle btn-sm relative text-[#6b5b52]" aria-label="Notifications">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
                 <span class="absolute right-1 top-1 h-2 w-2 rounded-full bg-[#c73e3e]"></span>
+            </a>
+            <a href="{{ route('messages.index') }}" class="btn btn-ghost btn-circle btn-sm text-[#6b5b52]" aria-label="Messages">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>
             </a>
             <details class="dropdown dropdown-end">
                 <summary class="btn btn-ghost btn-circle avatar cursor-pointer list-none p-0">
@@ -52,14 +37,13 @@
                         <img src="{{ asset('storage/'.auth()->user()->profile_picture) }}" alt="" class="h-9 w-9 rounded-full object-cover" />
                     @else
                         <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#e8b4bc] text-xs font-semibold text-white">
-                            {{ strtoupper(substr(auth()->user()?->username ?? auth()->user()?->first_name ?? 'U', 0, 2)) }}
+                            {{ strtoupper(substr(auth()->user()?->username ?? 'U', 0, 2)) }}
                         </span>
                     @endif
                 </summary>
                 <ul class="menu dropdown-content z-[60] mt-2 w-44 rounded-2xl border border-[#ebe4dc] bg-white p-2 shadow-lg">
                     <li><a href="{{ route('profile') }}" class="rounded-xl">My Profile</a></li>
-                    <li><a href="{{ route('profile', ['username' => auth()->user()->username]) }}" class="rounded-xl">View as Public</a></li>
-                    <li><a href="#" class="rounded-xl">Settings</a></li>
+                    <li><a href="{{ route('messages.index') }}" class="rounded-xl">Messages</a></li>
                     <li>
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf

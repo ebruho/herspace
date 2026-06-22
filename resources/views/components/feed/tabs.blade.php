@@ -13,16 +13,16 @@
     <ul class="flex gap-6 overflow-x-auto">
         @foreach ($tabs as $key => $label)
             <li>
-                <button
-                    type="button"
+                <a
+                    href="{{ route('home', ['tab' => $key]) }}"
                     @class([
-                        'whitespace-nowrap border-b-2 pb-3 text-sm font-semibold transition',
+                        'whitespace-nowrap border-b-2 pb-3 text-sm font-semibold transition inline-block',
                         'border-[#5c4033] text-[#3d2b22]' => $active === $key,
                         'border-transparent text-[#8b7355] hover:text-[#3d2b22]' => $active !== $key,
                     ])
                 >
                     {{ $label }}
-                </button>
+                </a>
             </li>
         @endforeach
     </ul>

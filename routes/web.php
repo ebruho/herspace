@@ -10,6 +10,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\SearchController;
 
 
 
@@ -26,6 +28,7 @@ Route::middleware('auth')->group(function () {
 
     // HOME FEED
     Route::get('/', [PostController::class, 'index'])->name('home');
+    Route::get('/search', SearchController::class)->name('search');
 
     // POSTS
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
@@ -39,6 +42,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/{user:username}/follow', [FollowController::class, 'store'])->name('profile.follow');
     Route::delete('/profile/{user:username}/follow', [FollowController::class, 'destroy'])->name('profile.unfollow');
     Route::get('/profile/{username?}', [ProfileController::class, 'show'])->name('profile');
+
+    // MESSAGES
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
 
     // LOGOUT
     Route::delete('/logout', [SessionsController::class, 'destroy'])->name('logout');

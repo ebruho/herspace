@@ -2,7 +2,7 @@
     <div class="space-y-6">
         {{-- <x-feed.composer /> --}}
 
-        <x-feed.tabs active="for-you" />
+        <x-feed.tabs :active="$activeTab" />
 
              <div class="space-y-6 pt-2">
             @forelse ($posts as $post)

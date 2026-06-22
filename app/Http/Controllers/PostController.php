@@ -14,17 +14,39 @@ class PostController extends Controller
     {
     }
 
-    public function index(): View
+    public function index(Request $request)
     {
-        $posts = Post::with(['user', 'images', 'hashtags'])
+        $activeTab = $request->query('tab', 'for-you');
+
+        $query = Post::query()
+            ->with(['user', 'images', 'hashtags'])
             ->where('status', 'active')
-            ->visibleTo(auth()->user())
-            ->latest()
-            ->paginate(10);
+            ->visibleTo(auth()->user());
+
+        if ($activeTab === 'following') {
+            $followingIds = auth()->user()
+                ->following()
+                ->pluck('users.id');
+
+            $query->whereIn('user_id', $followingIds);
+        }
+
+        if ($activeTab === 'communities') {
+            $query->whereNotNull('community_id');
+        }
+
+        if ($activeTab === 'trending') {
+            $query->orderByDesc('likes_count')
+                ->orderByDesc('comments_count');
+        } else {
+            $query->latest();
+        }
+
+        $posts = $query->paginate(10)->withQueryString();
 
         auth()->user()->load('likedPosts');
 
-        return view('home', compact('posts'));
+        return view('home', compact('posts', 'activeTab'));
     }
 
     public function store(Request $request): RedirectResponse

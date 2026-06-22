@@ -28,7 +28,9 @@
         {{ $slot }}
     </main>
 
-    <x-feed.post-modal />
+    @if (!request()->routeIs('posts.edit'))
+        <x-feed.post-modal />
+    @endif
     <x-ui.confirm-modal />
 
     @if ($showFooter)
